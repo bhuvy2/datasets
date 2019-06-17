@@ -6,12 +6,23 @@ import argparse
 def main(args):
     file_name = args.file
     zip_gdf = geopandas.read_file(file_name)
-    zip_gdf.rename(columns=dict(ZCTA5CE10='zip_code', INTPTLAT10='internal_point_latitude', INTPTLON10='internal_point_longitude'), inplace=True)
+    mapping = dict()
+    for col in zip_gdf.columns:
+        lcol = col.lower()
+        if lcol.startswith('ZCTA5CE'.lower()):
+            mapping[col] = 'zip_code'
+        if lcol.startswith('INTPTLAT'.lower()):
+            mapping[col] = 'internal_point_latitude'
+        if lcol.startswith('INTPTLON'.lower()):
+            mapping[col] = 'internal_point_longitude'
+    zip_gdf.rename(columns=mapping, inplace=True)
     zip_gdf['centroid_longitude'] = zip_gdf['geometry'].centroid.x
     zip_gdf['centroid_latitude'] = zip_gdf['geometry'].centroid.y
     zip_gdf['area'] = zip_gdf['geometry'].area
     zip_gdf['convex_hull_area'] = zip_gdf['geometry'].convex_hull.area
-    zip_gdf[['zip_code', 'centroid_longitude', 'centroid_latitude', 'internal_point_latitude', 'internal_point_longitude', 'area', 'convex_hull_area']].to_csv('Output file name', index=False)
+    export_keys = ['centroid_longitude', 'centroid_latitude', 'area', 'convex_hull_area',] 
+    export_keys = list(mapping.values()) + export_keys
+    zip_gdf[export_keys].to_csv(args.outfile, index=False)
 
 
 if __name__ == '__main__':
