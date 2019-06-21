@@ -30,8 +30,8 @@ author or the affirmer.
 If you'd like to cite this, although not required, here is the bibtex entry
 
 ```
-@misc{bhuvyzipgps,
-        title={Mapping of zip code to centroid gps},
+@misc{bhuvypopulation,
+        title={Tidy population data},
         url={https://github.com/bhuvy/datasets},
         author={Venkatesh, Bhuvan},
         year={2019},
